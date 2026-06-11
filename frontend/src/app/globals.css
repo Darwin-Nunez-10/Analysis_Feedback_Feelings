@@ -1,0 +1,130 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: #0b0f19;
+  --color-foreground: #e2e8f0;
+  --color-surface: #111827;
+  --color-surface-muted: #1a2234;
+  --color-surface-highlight: #243044;
+  --color-border: #2d3a4f;
+  --color-muted: #94a3b8;
+  --color-accent: #6366f1;
+  --color-accent-hover: #818cf8;
+  --color-positive: #34d399;
+  --color-neutral: #fbbf24;
+  --color-negative: #f87171;
+  --color-input: #0f172a;
+  --radius-lg: 0.5rem;
+}
+
+@layer base {
+  html {
+    color-scheme: dark only;
+    background-color: #0b0f19;
+  }
+
+  body {
+    background-color: #0b0f19;
+    color: #e2e8f0;
+    font-family: var(--font-geist-sans), system-ui, sans-serif;
+    min-height: 100vh;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    color: #e2e8f0;
+  }
+
+  p,
+  li,
+  dd,
+  dt,
+  span,
+  label {
+    color: inherit;
+  }
+
+  code {
+    border-radius: 0.25rem;
+    background-color: #1a2234;
+    padding: 0.125rem 0.375rem;
+    font-size: 0.75rem;
+    color: #cbd5e1;
+  }
+
+  select,
+  input[type="search"],
+  input[type="text"],
+  input[type="file"],
+  textarea {
+    background-color: #0f172a;
+    color: #e2e8f0;
+    border-color: #2d3a4f;
+  }
+
+  select option {
+    background-color: #111827;
+    color: #e2e8f0;
+  }
+
+  table {
+    color: #e2e8f0;
+  }
+
+  ::selection {
+    background-color: #6366f1;
+    color: #ffffff;
+  }
+}
+
+:focus-visible {
+  outline: 2px solid #6366f1;
+  outline-offset: 2px;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0b0f19;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+/* Recharts: forzar texto oscuro en leyendas/tooltips del SVG */
+.recharts-cartesian-grid-horizontal line,
+.recharts-cartesian-grid-vertical line {
+  stroke: #334155 !important;
+}
+
+.recharts-text {
+  fill: #94a3b8 !important;
+}
+
+.recharts-default-tooltip {
+  background-color: #1a2234 !important;
+  border: 1px solid #2d3a4f !important;
+  border-radius: 6px !important;
+}
+
+.recharts-tooltip-label,
+.recharts-tooltip-item {
+  color: #e2e8f0 !important;
+}
+
+.recharts-legend-item-text {
+  color: #94a3b8 !important;
+}

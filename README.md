@@ -1,59 +1,127 @@
-# Análisis de Feedback y Sentimiento del Cliente
+# Sistema Inteligente de Análisis de Feedback y Sentimiento del Cliente
 
-Sistema de PLN (PID III — Parte 2, Punto 1) para procesar reseñas de e-commerce en español.
+Proyecto académico **EIF-4200 Inteligencia Artificial I** — dashboard gerencial con **Next.js + React** y backend **FastAPI** para analizar comentarios en español.
+
+## Arquitectura
+
+```
+frontend/          → Next.js 16 + React + Tailwind (interfaz)
+api/               → FastAPI (REST)
+nlp_pipeline.py    → Limpieza, lematización (spaCy)
+sentiment_analyzer.py → Sentimiento (pysentimiento)
+visualizations.py  → Métricas y WordCloud (servidor)
+utils.py           → Carga de archivos y validaciones
+```
+
+**Flujo:** Frontend → API REST → Pipeline PLN → Respuesta JSON → Gráficos React
 
 ## Requisitos
 
 - Python 3.10+
-- Conexión a internet en la primera ejecución (descarga modelos spaCy y pysentimiento)
+- Node.js 20+
+- ~2 GB para modelos spaCy y sentimiento
 
 ## Instalación
 
-```bash
+### Fish shell (recomendado en CachyOS/Arch)
+
+```fish
 cd Analysis_Feedback_Feelings
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-python -m spacy download es_core_news_sm
+./scripts/setup.fish
+cd frontend && npm install && cd ..
+cp frontend/.env.local.example frontend/.env.local
 ```
 
-Para mayor precisión léxica (recomendado en el rubro del PID):
+### Bash / Zsh
 
 ```bash
-python -m spacy download es_core_news_lg
-export SPACY_MODEL=es_core_news_lg
+./scripts/setup.sh
+cd frontend && npm install && cd ..
+cp frontend/.env.local.example frontend/.env.local
 ```
 
-## Uso
+## Ejecución
 
-Procesar las muestras incluidas:
+Necesita **dos terminales** (API + frontend) o un solo comando:
 
-```bash
-python main.py
+### Opción A — Todo en uno (Fish)
+
+```fish
+./scripts/run-full.fish
 ```
 
-Procesar un texto personalizado:
+### Opción B — Terminales separadas (Fish)
 
-```bash
-python main.py "El producto llegó tarde y en mal estado"
+```fish
+# Terminal 1 — API Python (puerto 8000)
+./scripts/run-api.fish
+
+# Terminal 2 — Frontend Next.js (puerto 3000)
+./scripts/run-frontend.fish
 ```
 
-## Pipeline (Punto 1)
+Abrir: **http://localhost:3000**
 
-1. **Limpieza:** elimina URLs, emails, caracteres especiales y stop words (spaCy español).
-2. **Normalización:** tokenización y lematización con spaCy.
-3. **Sentimiento:** clasificación Positivo / Neutro / Negativo con [pysentimiento/robertuito](https://huggingface.co/pysentimiento/robertuito-sentiment-analysis).
+### Rutas directas (sin activar venv)
 
-El análisis de sentimiento se ejecuta sobre el texto limpio (sin lematizar) para preservar negaciones como *"no es bueno"*.
-
-## Estructura
-
+```fish
+.venv/bin/uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload
+cd frontend && npm run dev
 ```
-src/
-  cleaner.py      # limpieza y stop words
-  normalizer.py   # tokenización + lematización
-  sentiment.py    # análisis de polaridad
-  pipeline.py     # orquestación
-main.py           # demo CLI
-data/muestras.txt # reseñas de prueba
+
+> **Fish:** no use `source .venv/bin/activate` (es Bash). Use `activate.fish` o los scripts anteriores.
+
+## Interfaz (Next.js)
+
+Dashboard profesional basado en las **10 heurísticas de Nielsen**:
+
+| Heurística | Implementación |
+|------------|----------------|
+| Visibilidad del estado | Indicador de pasos, barra de progreso, badge "Sistema listo" |
+| Mundo real | Etiquetas en español claro ("Comentarios de clientes") |
+| Control del usuario | Reiniciar, volver atrás, quitar archivo |
+| Consistencia | Sistema de diseño unificado (tipografía, colores, botones) |
+| Prevención de errores | Validación de formato/tamaño antes de subir |
+| Reconocimiento | Columnas visibles, vista previa, filtros en tabla |
+| Flexibilidad | Gráfico barras/circular, búsqueda y paginación |
+| Minimalismo | Información progresiva por pasos |
+| Recuperación de errores | Mensajes con causa y solución |
+| Ayuda | Panel lateral de documentación |
+
+## API REST
+
+| Método | Ruta | Descripción |
+|--------|------|-------------|
+| GET | `/api/health` | Estado de modelos |
+| POST | `/api/preview` | Vista previa de archivo |
+| POST | `/api/analyze` | Análisis completo |
+| GET | `/api/validation` | Pruebas negación/sarcasmo |
+| POST | `/api/export/csv` | Exportar CSV |
+| POST | `/api/export/xlsx` | Exportar Excel |
+
+Documentación interactiva: **http://localhost:8000/docs**
+
+## Streamlit (legacy)
+
+La interfaz Streamlit sigue disponible:
+
+```fish
+./scripts/run.fish
 ```
+
+## Archivos de prueba
+
+- `data/muestras.csv`
+- `data/muestras.txt`
+
+## Defensa técnica
+
+1. Frontend desacoplado (React) + backend PLN (Python).
+2. Sentimiento sobre texto limpio (preserva negaciones).
+3. WordCloud y métricas generadas en servidor; gráficos interactivos en cliente.
+4. Carga diferida de panel de validación (`dynamic import`).
+5. Manejo de errores con mensajes accionables.
+
+## Licencia
+
+Proyecto académico — EIF-4200 Inteligencia Artificial I.
