@@ -51,6 +51,8 @@ export interface ValidationTest {
   expectativa: string;
   sentimiento: string;
   confianza: number;
+  probabilidades: Record<string, number>;
+  acierto: "correcto" | "incorrecto";
   observacion: string;
 }
 
