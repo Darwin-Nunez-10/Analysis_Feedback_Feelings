@@ -43,6 +43,31 @@ VALIDATION_EXAMPLES = [
         "tipo": "Negación con matiz positivo",
         "expectativa": "Positivo o Neutro",
     },
+    {
+        "texto": "El servicio fue rápido y muy eficiente.",
+        "tipo": "Afirmación positiva con intensificador",
+        "expectativa": "Positivo",
+    },
+    {
+        "texto": "Jamás volvería a comprar aquí.",
+        "tipo": "Negación temporal implícita",
+        "expectativa": "Negativo",
+    },
+    {
+        "texto": "Qué magnífica compra, llegó completamente roto.",
+        "tipo": "Sarcasmo con contraste léxico",
+        "expectativa": "Negativo",
+    },
+    {
+        "texto": "El envío tardó, pero el producto cumple lo prometido.",
+        "tipo": "Opinión mixta con concesión",
+        "expectativa": "Neutro o Positivo",
+    },
+    {
+        "texto": "No recomendaría este producto a nadie.",
+        "tipo": "Negación categórica de recomendación",
+        "expectativa": "Negativo",
+    },
 ]
 
 _analyzer = None
@@ -176,6 +201,12 @@ def get_validation_observation(
     )
 
 
+def _compute_acierto(etiqueta: str, expectativa: str) -> str:
+    """Determina si el resultado coincide con la expectativa académica."""
+    opciones = [o.strip() for o in expectativa.split(" o ")]
+    return "correcto" if etiqueta in opciones else "incorrecto"
+
+
 def run_validation_tests(clean_texts: list[str] | None = None) -> list[dict]:
     """
     Ejecuta las pruebas de validación de negación y sarcasmo.
@@ -204,6 +235,8 @@ def run_validation_tests(clean_texts: list[str] | None = None) -> list[dict]:
                 "expectativa": example["expectativa"],
                 "sentimiento": sentiment["etiqueta"],
                 "confianza": sentiment["confianza"],
+                "probabilidades": sentiment["probabilidades"],
+                "acierto": _compute_acierto(sentiment["etiqueta"], example["expectativa"]),
                 "observacion": observation,
             }
         )
